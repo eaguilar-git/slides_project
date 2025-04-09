@@ -1,0 +1,279 @@
+---
+title: "Does cost recovery lead to asset growth for electric utilities?"
+author: "Edgar Aguilar"
+institute: "American University"
+date: "ea9339a@american.edu"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [robot, robot-fonts]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      ratio: "16:9"
+---   
+```{r setup, include=FALSE}
+# Global chunk options 
+knitr::opts_chunk$set(
+  echo = FALSE,
+  prompt = FALSE,
+  tidy = FALSE,
+  comment = NA,
+  message = FALSE,
+  warning = FALSE,
+  dev = "svglite",   
+  fig.align = "center"
+)
+
+# Load required package(s)
+library(readxl)
+library(knitr)
+
+# Check if the data file exists; adjust the path if necessary.
+data_file <- "slides_utilities_data.xlsx"
+if (!file.exists(data_file)) {
+  stop("Data file '", data_file, "' not found. Please ensure the file exists in your working directory or adjust the file path.")
+}
+
+# Load the dataset.
+data_slides <- readxl::read_xlsx(data_file)
+```
+
+# Overview
+- Power utilities play a critical role in providing communities with reliable, high-quality electricity.
+- Asset growth in utilities—reflected by increased infrastructure such as equipment and wiring—is generally seen as beneficial to advance access and service quality.
+- This presentation investigates whether the recovery of operational and debt costs can help explain utility asset growth.
+- The analysis indicates that, based on the available data, cost recovery does not have strong explanatory power for asset growth.
+
+---
+# Descriptive stats
+- There are `r length(unique(data_slides$"Utility short name"))` unique utilities and `r length(unique(data_slides$Country))` unique countries in the dataset.
+- Most power utilities in the sample are in the lower and upper middle income groups, with fewer in low or high income countries.
+- We look at Average Cost Recovery (for period 2012-2022) and Annual Asset Growth Rate (for the same period) across these utilities.
+
+```{r bar-chart-utilities, fig.width=7, fig.height=5, echo=FALSE, fig.bg='transparent'}
+# Define the desired order for the income groups
+income_levels <- c("Low income", "Lower middle income", "Upper middle income", "High income")
+
+# Create a frequency table for the ordered Income Group
+utilities_income_count <- table(factor(data_slides$`Income Group`, levels = income_levels))
+
+# Increase the bottom margin to provide enough space for angled labels and x-axis label
+old_par <- par(mar = c(10, 4, 4, 2) + 0.1)
+
+# Create the bar chart WITHOUT the built-in x-axis label (xlab = "")
+bar_positions <- barplot(
+  utilities_income_count,
+  main = "Power Utilities by Income Group",
+  xlab = "",               # Leave this blank; we'll add manually using mtext()
+  ylab = "Count of Utilities",
+  col = "steelblue",
+  border = "white",
+  ylim = c(0, max(utilities_income_count) * 1.15),
+  xaxt = "n"               # Suppress automatic x-axis labels
+)
+
+# Manually add the angled x-axis labels
+text(
+  x = bar_positions, 
+  y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  
+  labels = income_levels, 
+  srt = 30,         # Rotate labels by 30 degrees
+  adj = c(1, 1),    
+  xpd = TRUE,       # Allow drawing in the margin
+  cex = 0.9         
+)
+
+# Manually add the x-axis label *below* the angled category labels
+# 'line' controls how far below the plot area the text is drawn
+mtext("Income Group", side = 1, line = 5, cex = 1.0)
+
+# Annotate each bar with its count value
+text(
+  x = bar_positions,
+  y = utilities_income_count,
+  labels = utilities_income_count,
+  pos = 3,         # Places text above each bar
+  cex = 0.8,
+  col = "black"
+)
+
+# Reset the graphical parameters to their original settings
+par(old_par)
+```
+
+
+---
+# Cost recovery across utilities
+- Only 69 out of the 189 utilities recover operation and debt costs.
+- Utilities in high income and upper middle income countries, in average, recover costs, while utilities in low and low middle income do not. 
+
+.pull-left[
+```{r pie-chart, fig.width=7, fig.height=5, echo=FALSE}
+# Convert "Average Cost Recovery" to numeric if it isn't already
+data_slides$`Average Cost Recovery` <- as.numeric(data_slides$`Average Cost Recovery`)
+
+# Create a grouping variable: utilities above 100% recovery vs. below 100%
+data_slides$recovery_group <- ifelse(data_slides$`Average Cost Recovery` > 1, "Above 100%", "Below 100%")
+
+# Count utilities in each group
+recovery_counts <- table(data_slides$recovery_group)
+
+# Create a pie chart with custom labels and colors
+pie(recovery_counts,
+    labels = paste0(names(recovery_counts), " (", recovery_counts, ")"),
+    main = "Utilities by Average Cost Recovery",
+    col = c("lightblue", "lightgreen"))
+```
+]
+.pull-right[
+```{r box-plot-cost, fig.width=7, fig.height=5, echo=FALSE}
+# Filter out observations with "Average Cost Recovery" above 3
+data_filtered <- subset(data_slides, `Average Cost Recovery` <= 3)
+
+# Convert Average Cost Recovery to percentage by multiplying by 100
+data_filtered$`Average Cost Recovery (%)` <- data_filtered$`Average Cost Recovery` * 100
+
+# Define the desired order for the Income Group and set the factor levels
+desired_levels <- c("Low income", "Lower middle income", "Upper middle income", "High income")
+data_filtered$`Income Group` <- factor(data_filtered$`Income Group`, levels = desired_levels)
+
+# Increase the bottom margin to make room for both the angled category labels and the x-axis label
+old_par <- par(mar = c(10, 4, 4, 2) + 0.1, cex.axis = 0.9)
+
+# Create the box plot without drawing the x-axis labels (xaxt="n")
+bp <- boxplot(`Average Cost Recovery (%)` ~ `Income Group`, 
+              data = data_filtered,
+              main = "Average Cost Recovery by Income Group",
+              xlab = "",  # Remove x-axis label here; we'll add it manually
+              ylab = "Average Cost Recovery (%)",
+              col = "lightblue",
+              border = "darkblue",
+              xaxt = "n")
+
+# Draw the x-axis ticks (without labels)
+axis(1, at = 1:length(desired_levels), labels = FALSE)
+
+# Manually add the x-axis category labels at a 30° angle
+text(x = 1:length(desired_levels), 
+     y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  # Position slightly below the axis line
+     labels = desired_levels, 
+     srt = 30,         # Rotate labels by 30 degrees
+     adj = c(1, 1),    # Adjust text alignment (tweak as needed)
+     xpd = TRUE,       # Allow labels to be drawn in the margin
+     cex = 0.9)        # Set text size
+
+# Add the x-axis title below the angled labels with extra space (increase 'line' to move farther from labels)
+mtext("Income Group", side = 1, line = 5, cex = 1)
+
+# Compute group means and medians by Income Group
+group_means <- tapply(data_filtered$`Average Cost Recovery (%)`, 
+                      data_filtered$`Income Group`, mean, na.rm = TRUE)
+group_medians <- tapply(data_filtered$`Average Cost Recovery (%)`, 
+                        data_filtered$`Income Group`, median, na.rm = TRUE)
+
+# Overlay markers for mean (red circles) and median (blue triangles)
+points(1:length(desired_levels), group_means, pch = 19, col = "red")
+points(1:length(desired_levels), group_medians, pch = 17, col = "blue")
+
+# Add a legend to the plot in the top right corner
+legend("topright", legend = c("Mean", "Median"), pch = c(19, 17), col = c("red", "blue"))
+
+# Reset graphical parameters to their original settings
+par(old_par)
+```
+]
+---
+# Cost recovery and asset growth
+- The ability of a utility to recover its costs (Average Cost Recovery) DOES NOT have any predictive power for how quickly its assets are growing (Total Assets Growth Rate).
+- Other variables, beyond cost recovery might explain better growth in assets. 
+
+.pull-left[
+```{r regression-table, echo=FALSE}
+# Run the regression
+model <- lm(`Total Assets Growth Rate` ~ `Average Cost Recovery`, data = data_slides)
+
+# Extract regression coefficients and rename columns
+reg_table <- as.data.frame(summary(model)$coefficients)
+colnames(reg_table) <- c("Estimate", "Std. Error", "t-value", "p-value")
+
+# Print the table using kableExtra with a chosen font size
+library(knitr)
+library(kableExtra)
+kable(reg_table, caption = "Regression Results: Total Assets Growth Rate on Average Cost Recovery", align = "c") %>%
+  kable_styling(full_width = FALSE, font_size = 10)
+```
+]
+
+.pull-right[
+```{r box-plot-asset-growth, fig.width=7, fig.height=5, echo=FALSE}
+# Ensure "Average Cost Recovery" is numeric
+data_slides$`Average Cost Recovery` <- as.numeric(data_slides$`Average Cost Recovery`)
+
+# Create buckets for Average Cost Recovery
+data_slides$ACR_bucket <- cut(data_slides$`Average Cost Recovery`,
+                              breaks = c(-Inf, 0.5, 0.75, 1, Inf),
+                              labels = c("Below 50%", "Between 50%-75%", "Between 75%-100%", "Above 100%"),
+                              right = FALSE)
+
+# Filter out observations where Total Assets Growth Rate exceeds 0.40 (i.e., 40%)
+data_filtered <- subset(data_slides, `Total Assets Growth Rate` <= 0.40)
+
+# Convert Total Assets Growth Rate to percentage by multiplying by 100
+data_filtered$`Total Assets Growth Rate (%)` <- data_filtered$`Total Assets Growth Rate` * 100
+
+# Set extra bottom margin to give room for both the angled labels and the x-axis title.
+# Also, set a common text size for axis labels via cex.axis.
+old_par <- par(mar = c(10, 4, 4, 2) + 0.1, cex.axis = 0.7)
+
+# Create the box plot while suppressing both x and y axes.
+bp <- boxplot(`Total Assets Growth Rate (%)` ~ ACR_bucket, 
+              data = data_filtered,
+              main = "Total Assets Growth Rate by Average Cost Recovery Bucket",
+              xlab = "",                        # Remove built-in x-axis label.
+              ylab = "Total Assets Growth Rate (%)",
+              col = "lightblue",
+              border = "darkblue",
+              xaxt = "n", 
+              yaxt = "n")
+
+# Manually add the y-axis with specified text size.
+axis(2, cex.axis = 0.7)
+
+# Get the bucket positions and labels for the x-axis.
+bucket_positions <- 1:length(levels(data_filtered$ACR_bucket))
+bucket_labels <- levels(data_filtered$ACR_bucket)
+
+# Draw the x-axis ticks (without labels).
+axis(1, at = bucket_positions, labels = FALSE)
+
+# Manually add the x-axis category labels at a 30° angle with reduced text size.
+text(x = bucket_positions, 
+     y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  # Position slightly below the axis line.
+     labels = bucket_labels, 
+     srt = 30,         # Rotate labels by 30 degrees.
+     adj = c(1, 1),    # Adjust alignment (tweak if needed).
+     xpd = TRUE,       # Allow labels to be drawn outside the plotting area.
+     cex = 0.7)        # Set text size to match the y-axis labels.
+
+# Add the x-axis title manually with extra space from the category labels.
+mtext("Cost Recovery Bucket", side = 1, line = 5, cex = 1)
+
+# Compute means and medians for each ACR bucket.
+means <- tapply(data_filtered$`Total Assets Growth Rate (%)`, data_filtered$ACR_bucket, mean, na.rm = TRUE)
+medians <- tapply(data_filtered$`Total Assets Growth Rate (%)`, data_filtered$ACR_bucket, median, na.rm = TRUE)
+
+# Overlay markers for mean (red circles) and median (blue triangles) on the box plot.
+points(bucket_positions, means, pch = 19, col = "red")
+points(bucket_positions, medians, pch = 18, col = "blue")
+
+# Add a legend in the top right corner.
+legend("topright", legend = c("Mean", "Median"), col = c("red", "blue"), pch = c(19, 18))
+
+# Reset graphical parameters to their original settings.
+par(old_par)
+```
+]
+---
+# Thanks!
+
