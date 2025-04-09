@@ -1,224 +1,103 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Slide Decks with xaringan</title>
+    <title>Does cost recovery lead to asset growth for electric utilities?</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Austin Hart, Ph.D." />
-    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/rladies.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/rutgers-fonts.css" rel="stylesheet" />
+    <meta name="author" content="Edgar Aguilar" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/robot.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/robot-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 .title[
-# Slide Decks with xaringan
+# Does cost recovery lead to asset growth for electric utilities?
 ]
 .author[
-### Austin Hart, Ph.D.
+### Edgar Aguilar
 ]
 .institute[
 ### American University
 ]
 .date[
-### <a href="mailto:ahart@american.edu" class="email">ahart@american.edu</a>
+### <a href="mailto:ea9339a@american.edu" class="email">ea9339a@american.edu</a>
 ]
 
 ---
 
 
 
+# Overview
+- Power utilities play a critical role in providing communities with reliable, high-quality electricity.
+- Asset growth in utilities—reflected by increased infrastructure such as equipment and wiring—is generally seen as beneficial to advance access and service quality.
+- This presentation investigates whether the recovery of operational and debt costs can help explain utility asset growth.
+- The analysis indicates that, based on the available data, cost recovery does not have strong explanatory power for asset growth.
 
+---
+# Descriptive stats
+- There are 185 unique utilities and 93 unique countries in the dataset.
+- Most power utilities in the sample are in the lower and upper middle income groups, with fewer in low or high income countries.
+- We look at Average Cost Recovery (for period 2012-2022) and Annual Asset Growth Rate (for the same period) across these utilities.
 
-# Getting started
-
-- Start a new RProject  
-
-- Create a new R Markdown file: 
-
-&gt; File -&gt; New File -&gt; R Markdown -&gt; From Template -&gt; Ninja Presentation  
-
-- Make your presentation   
-
-- `Knit` to `.html` slides
+&lt;img src="Xaringan_practice_files/figure-html/bar-chart-utilities-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 ---
-# YAML options
-## Set your metadata
+# Cost recovery across utilities
+- Only 69 out of the 189 utilities recover operation and debt costs.
+- Utilities in high income and upper middle income countries, in average, recover costs, while utilities in low and low middle income do not. 
 
 .pull-left[
-Specify the `xaringan` template, which will `knit` to a `.html` slide deck. 
-
-Specify standard or custom `css` formats. Run `names(xaringan:::list_css())` to see options.
+&lt;img src="Xaringan_practice_files/figure-html/pie-chart-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 .pull-right[
-
-```yaml
----
-title: "xaringan Presentations"
-author: "Austin Hart, Ph.D."
-institute: "American University"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    css: [default, fc, fc-fonts]
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      ratio: "16:9"
----
-```
+&lt;img src="Xaringan_practice_files/figure-html/box-plot-cost-1.svg" style="display: block; margin: auto;" /&gt;
 ]
-
 ---
-# Setup chunk
+# Cost recovery and asset growth
+- The ability of a utility to recover its costs (Average Cost Recovery) DOES NOT have any predictive power for how quickly its assets are growing (Total Assets Growth Rate).
+- Other variables, beyond cost recovery might explain better growth in assets. 
 
 .pull-left[
-  **Remember**: Knitting initiates a new/fresh R environment, and your `.Rmd` file must be self-contained.
-  
-  Setup chunk should follow the `YAML` and define the options when knitting.
-  
-  One key is your visual. Consider setting a default file type (sett graphcis device through `dev`) and alignment.
-]
-
-.pull-right[
-
-
-```r
-## Global options
-  knitr::opts_chunk$set(
-    echo = FALSE, 
-    tidy = FALSE,
-    message = FALSE, 
-    warning = FALSE,
-    dev = 'svg',
-    fig.align = 'center'
-  )
-
-## Libraries
-  library(tidyverse)
-  library(knitr)
-
-## Load data?
-## Set ggplot theme?
-```
-]
-
-
----
-# Defining new slides
-
-.pull-left[
-- Initiate new slide using:  `---`
-
-- Titles are level-1 headers: `# Title`
-
-- Class: `inverse` for dark
-
-- Alignment:  
-
-  - Vertical: `bottom`, `middle`, `top`  
-  - Horizontal: `left`, `center`, `right`  
+&lt;table class="table" style="font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;caption style="font-size: initial !important;"&gt;Regression Results: Total Assets Growth Rate on Average Cost Recovery&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Estimate &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Std. Error &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; t-value &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; p-value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.1434669 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0610884 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.348513 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0199160 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `Average Cost Recovery` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -0.0748494 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0614606 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -1.217842 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.2248518 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 .pull-right[
-
-```r
-# Title of Slide 1
-
-- Roadmap
-- Materials
-
----
-# Slide 2 title
-
-  &gt; Inspirational quote.
-
----
-class: inverse, left, bottom
-# Slide 3 title
-## Subtitle
-```
+&lt;img src="Xaringan_practice_files/figure-html/box-plot-asset-growth-1.svg" style="display: block; margin: auto;" /&gt;
 ]
-
 ---
-class: inverse, top, left
-
-# Top-left alignment
-## Also inverse
-
----
-class: inverse, center, middle
-
-# Center-middle
-## I've changed
-
-
----
-class: inverse, bottom, right  
-
-# Bottom-right alignment  
-## Please stop
-
-
----
-# Column splits
-
-Split columns by including content inside `.pull-left[]` and `.pull-right[]`
-
-.pull-left[
-### Left column
-
-
-```r
-  summary(mtcars$mpg)
-```
-
-```
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   15.43   19.20   20.09   22.80   33.90 
-```
-]
-
-.pull-right[
-### Right column
-
-
-```r
-  hist(mtcars$mpg)
-```
-
-&lt;img src="xaringanIntro_files/figure-html/unnamed-chunk-4-1.svg" style="display: block; margin: auto;" /&gt;
-]
-
----
-# Hosting with ghpages
-
-You can host your slides remotely on github!
-
-1. Initiate and clone a repository.  
-
-2. Build and compile your slides.  
-
-3. CRITICAL: name the deck `index.html`.  
-
-4. Commit and push to github.  
-
-5. On github, go to Settings -&gt; Pages.  
-
-6. Change "Branch" from none to master. Click save.  
-
-7. Find your slides at: `user_name.github.io/repo_name`
-
----
-# Useful Resources
-
-- Yihui Xie is the guru of all things markdown (and the author of the `knitr` package). His book [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  is a great intro. See Chapters 4, 7, 9 for info on slide presentations.
-
-- Irene Vrbik also has an excellent [example slide deck](https://irene.vrbik.ok.ubc.ca/slides/NHSRxaringan.html#1). See her [markdown code on github](https://github.com/vrbiki/learning-xaringan/blob/master/NHSRxaringan.Rmd) to mimic all the little fancy things.
+# Thanks!
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
