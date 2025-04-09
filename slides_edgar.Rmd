@@ -40,16 +40,21 @@ data_slides <- readxl::read_xlsx(data_file)
 ```
 
 # Overview
-- Power utilities play a critical role in providing communities with reliable, high-quality electricity.
-- Asset growth in utilities—reflected by increased infrastructure such as equipment and wiring—is generally seen as beneficial to advance access and service quality.
-- This presentation investigates whether the recovery of operational and debt costs can help explain utility asset growth.
-- The analysis indicates that, based on the available data, cost recovery does not have strong explanatory power for asset growth.
+- Utilities play a key role in ensuring reliable, high-quality electricity service.
+
+- Asset growth serves as proxy for improvements in infrastructure, access, and service quality.
+
+- This analysis explores whether cost recovery helps explain asset growth.
+
+- I begin by showing how many utilities recover their costs and how many do not.I then examine asset growth by cost recovery levels and test the relationship using regression.
+
+- Results show cost recovery has limited explanatory power for asset growth — other factors likely matter more.
 
 ---
-# Descriptive stats
+# Description of the dataset
 - There are `r length(unique(data_slides$"Utility short name"))` unique utilities and `r length(unique(data_slides$Country))` unique countries in the dataset.
 - Most power utilities in the sample are in the lower and upper middle income groups, with fewer in low or high income countries.
-- We look at Average Cost Recovery (for period 2012-2022) and Annual Asset Growth Rate (for the same period) across these utilities.
+- I look at Average Cost Recovery (for period 2012-2022) and Annual Asset Growth Rate (for the same period) across these utilities.
 
 ```{r bar-chart-utilities, fig.width=7, fig.height=5, echo=FALSE, fig.bg='transparent'}
 # Define the desired order for the income groups
@@ -105,8 +110,8 @@ par(old_par)
 
 ---
 # Cost recovery across utilities
-- Only 69 out of the 189 utilities recover operation and debt costs.
-- Utilities in high income and upper middle income countries, in average, recover costs, while utilities in low and low middle income do not. 
+- Only 69 (37%) of 189 utilities recover both operational and debt-related costs.
+- On average, utilities in high- and upper-middle-income countries achieve cost recovery, while those in low- and lower-middle-income countries fall short.
 
 .pull-left[
 ```{r pie-chart, fig.width=7, fig.height=5, echo=FALSE}
@@ -184,9 +189,10 @@ par(old_par)
 ```
 ]
 ---
-# Cost recovery and asset growth
-- The ability of a utility to recover its costs (Average Cost Recovery) DOES NOT have any predictive power for how quickly its assets are growing (Total Assets Growth Rate).
-- Other variables, beyond cost recovery might explain better growth in assets. 
+# Cost recovery and utility's asset growth
+- Average Cost Recovery is not a significant predictor of Total Assets Growth Rate (p = 0.225); the model explains very little variation (R² = 0.008).
+- Other factors beyond cost recovery may better explain asset growth.
+- For example, access to external financing, government support, or capital investment programs could drive asset expansion regardless of cost recovery performance.
 
 .pull-left[
 ```{r regression-table, echo=FALSE}
